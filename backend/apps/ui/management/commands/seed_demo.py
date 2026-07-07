@@ -1,9 +1,14 @@
 """Données de démonstration : comptes, annonces, signalement d'exemple.
 
-N'agit que si la base ne contient encore aucun utilisateur (jamais en
-production). Activée par CIVIC_DEMO=1 dans l'entrypoint.
+Double garde-fou contre toute exécution en production :
+- refuse de s'exécuter si le domaine n'est pas en .localhost (un
+  domaine .localhost ne résout qu'en boucle locale, RFC 6761 : les
+  comptes de démonstration ne sont donc jamais joignables à distance) ;
+- n'agit que si la base ne contient encore aucun utilisateur.
+Activée par CIVIC_DEMO=1 dans l'entrypoint.
 """
 
+from django.conf import settings
 from django.contrib.auth.models import Group, User
 from django.core.management.base import BaseCommand
 
@@ -11,13 +16,22 @@ from apps.announcements.models import Announcement
 from apps.reports import services
 from apps.reports.models import Category, Department
 
-DEMO_PASSWORD = "demo-civic-libre"  # noqa: S105 : démonstration locale uniquement
+DEMO_PASSWORD = "demo-civic-libre"  # noqa: S105 : inutilisable hors .localhost (garde ci-dessous)
 
 
 class Command(BaseCommand):
-    help = "Charge des données de démonstration (uniquement sur base vierge)."
+    help = "Charge des données de démonstration (base vierge et domaine .localhost uniquement)."
 
     def handle(self, *args, **options):
+        if not settings.CIVIC_DOMAIN.endswith(".localhost"):
+            self.stdout.write(
+                self.style.WARNING(
+                    f"Graine de démonstration REFUSÉE : domaine « {settings.CIVIC_DOMAIN} » "
+                    "hors .localhost. En production, créez le compte avec "
+                    "createsuperuser (voir docs/exploitation/installation.md)."
+                )
+            )
+            return
         if User.objects.exists():
             self.stdout.write("Des comptes existent déjà : graine de démonstration ignorée.")
             return

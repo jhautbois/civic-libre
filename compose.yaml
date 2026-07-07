@@ -7,7 +7,10 @@ name: civic-libre
 
 x-civic-env: &civic-env
   CIVIC_DEBUG: ${CIVIC_DEBUG:-0}
-  # Démo : comptes et contenus d'exemple sur base vierge. Mettre 0 en production.
+  # Démo : comptes et contenus d'exemple. Double garde-fou côté
+  # application : base vierge uniquement, et domaine .localhost
+  # uniquement (jamais de comptes de démonstration sur un domaine
+  # public, même si la variable reste à 1). Mettre 0 en production.
   CIVIC_DEMO: ${CIVIC_DEMO:-1}
   CIVIC_DOMAIN: ${CIVIC_DOMAIN:-civic.localhost}
   CIVIC_AGENDA_DOMAIN: ${CIVIC_AGENDA_DOMAIN:-agenda.civic.localhost}
