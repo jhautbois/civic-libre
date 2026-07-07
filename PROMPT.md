@@ -43,7 +43,9 @@ Formats et standards imposés : iCal pour l'agenda, RSS pour la diffusion, le st
 
 ## Méthode imposée
 
-Utilise les skills superpowers à chaque étape (brainstorming, writing-plans, test-driven-development, requesting-code-review, verification-before-completion) et le skill de design frontend pour l'interface. Procède par phases. NE COMMENCE À CODER QU'APRÈS validation de la spec. Reste en mode plan tant que la phase 2 n'est pas validée.
+Utilise les skills superpowers à chaque étape (brainstorming, writing-plans, test-driven-development, requesting-code-review, verification-before-completion) et le skill de design frontend pour l'interface. Procède par phases.
+
+GATE OBLIGATOIRE, à respecter avant tout. À la fin de la phase 2, tu t'ARRÊTES et tu attends ma validation écrite et explicite avant toute implémentation. Ce point d'arrêt prime sur tout le reste, y compris sur l'orchestration automatique de workflows ou de sous-agents : aucun agent, aucun workflow ne doit écrire de code, créer une structure de projet ou lancer un développement tant que je n'ai pas validé la spec par écrit. Tu peux mobiliser des agents en parallèle pour la recherche (phase 0) et pour les revues adverses (phases 2 et 5), mais jamais pour coder avant mon feu vert. En cas de doute, tu demandes plutôt que d'avancer.
 
 Phase 0, choix de la base existante (état de l'art sourcé par recherche web). Évaluer et RECOMMANDER la meilleure base libre à réutiliser ou étendre, plutôt que de partir de zéro. Candidats à examiner sérieusement :
 - Communecter (réseau territorial libre tout-en-un, information, agenda, associations), la piste la plus proche d'un produit intégré.
@@ -54,7 +56,7 @@ Observer les solutions propriétaires de référence (Mon Village d'Ouest-France
 
 Phase 1, spécification (mode plan). Périmètre du produit minimum viable, personas (habitant, agent, administrateur), parcours, modèle de données, interfaces et formats standards (iCal, RSS, Open311), architecture cible privilégiant l'extension de la base retenue, intentions d'ergonomie et de design, exigences RGPD et RGAA, stratégie de maintenance par des tiers. Rédiger une spec claire et un plan d'implémentation incrémental.
 
-Phase 2, revue adverse de la spec. Jouer l'avocat du diable contre sa propre spec : réinvention inutile de briques existantes, sur-ingénierie, dépendances fragiles, dette de maintenance, angles morts RGPD et accessibilité. Corriger la spec, puis demander ma validation avant de coder.
+Phase 2, revue adverse de la spec. Jouer l'avocat du diable contre sa propre spec : réinvention inutile de briques existantes, sur-ingénierie, dépendances fragiles, dette de maintenance, angles morts RGPD et accessibilité. Corriger la spec. Puis STOP : présente-moi la spec finale et attends ma validation écrite. Ne passe ni en phase 3 ni en implémentation sans ce feu vert explicite, même si l'orchestration te pousse à enchaîner.
 
 Phase 3, architecture détaillée et système de design. Structure du dépôt, dépendances, conteneurs, schémas de données et d'API, plus une base de design (palette, typographie, composants accessibles).
 
@@ -74,4 +76,4 @@ Français, accents corrects, pas de tiret comme ponctuation (virgules, deux-poin
 
 ## Démarrage
 
-Commence par la phase 0, le choix de la base existante, puis enchaîne sur la spec en mode plan. Ne code pas avant mon feu vert.
+Commence par la phase 0, le choix de la base existante, puis enchaîne sur la spec en mode plan. Ne code pas, ne crée pas la structure du projet, ne lance aucun développement avant ma validation écrite de la spec, même si l'orchestration automatique te pousse à avancer.
