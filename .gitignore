@@ -29,3 +29,6 @@ volumes/
 .pytest_cache/
 .ruff_cache/
 *.egg-info/
+
+# Sauvegardes locales : jamais dans le dépôt (contiennent des clés)
+sauvegardes/
