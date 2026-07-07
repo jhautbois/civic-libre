@@ -7,7 +7,7 @@ from django.views.static import serve
 from apps.announcements.feeds import AnnouncementsFeed
 from apps.events.feeds import EventsFeed
 from apps.events.ics import events_ics
-from apps.ui import tiles
+from apps.ui import pwa, tiles
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -23,8 +23,12 @@ urlpatterns = [
     path("gestion/deconnexion/", auth_views.LogoutView.as_view(), name="logout"),
     path("", include("apps.announcements.urls")),
     path("", include("apps.reports.urls")),
+    path("", include("apps.push.urls")),
     path("open311/v2/", include("apps.reports.open311_urls")),
     path("tuiles/<int:z>/<int:x>/<int:y>.png", tiles.tile, name="tile"),
+    path("sw.js", pwa.service_worker, name="service_worker"),
+    path("manifest.webmanifest", pwa.manifest, name="manifest"),
+    path("icone-<int:size>.png", pwa.icon, name="pwa_icon"),
     # Images publiques des annonces (les photos de signalements passeront
     # par une vue contrôlée, jamais par ce chemin).
     path(

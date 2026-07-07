@@ -7,6 +7,10 @@
   <link rel="stylesheet" href="{% static 'ui/css/main.css' %}">
   <link rel="alternate" type="application/rss+xml" title="Agenda de {{ civic.COMMUNE_NAME }}" href="{% url 'events_rss' %}">
   <link rel="alternate" type="application/rss+xml" title="Annonces de {{ civic.COMMUNE_NAME }}" href="{% url 'announcements_rss' %}">
+  <link rel="manifest" href="{% url 'manifest' %}">
+  <meta name="theme-color" content="{{ civic.ACCENT_COLOR }}">
+  <link rel="icon" href="{% url 'pwa_icon' 192 %}">
+  <link rel="apple-touch-icon" href="{% url 'pwa_icon' 192 %}">
   {% block extra_head %}{% endblock %}
 </head>
 <body>

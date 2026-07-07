@@ -284,9 +284,7 @@ def request_detail(request, request_id, fmt):
         report = Report.objects.get(reference=request_id)
     except Report.DoesNotExist:
         return _error(request, fmt, 404, f"service_request_id {request_id} inconnu")
-    return _respond(
-        request, fmt, "service_requests", [_request_dict(request, report)], "request"
-    )
+    return _respond(request, fmt, "service_requests", [_request_dict(request, report)], "request")
 
 
 def token_detail(request, token_id, fmt):

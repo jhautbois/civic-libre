@@ -12,9 +12,7 @@ urlpatterns = [
         open311.service_definition,
         name="service_definition",
     ),
-    re_path(
-        r"^requests\.(?P<fmt>json|xml)$", open311.requests_collection, name="requests"
-    ),
+    re_path(r"^requests\.(?P<fmt>json|xml)$", open311.requests_collection, name="requests"),
     re_path(
         r"^requests/(?P<request_id>[\w-]+)\.(?P<fmt>json|xml)$",
         open311.request_detail,

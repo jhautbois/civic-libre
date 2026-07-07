@@ -79,6 +79,7 @@ INSTALLED_APPS = [
     "apps.events",
     "apps.announcements",
     "apps.reports",
+    "apps.push",
 ]
 
 LOGIN_URL = "/gestion/connexion/"
