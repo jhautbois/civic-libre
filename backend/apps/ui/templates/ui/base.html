@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ civic.COMMUNE_NAME }}{% endblock %}</title>
+</head>
+<body>
+  <header>
+    <p>{{ civic.COMMUNE_NAME }}</p>
+  </header>
+  <main id="contenu">
+    {% block content %}{% endblock %}
+  </main>
+  <footer>
+    <p><a href="{{ civic.AGENDA_URL }}">Agenda</a></p>
+  </footer>
+</body>
+</html>

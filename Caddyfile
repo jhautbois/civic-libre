@@ -1,0 +1,20 @@
+# Proxy d'entrée : HTTPS automatique (certificats internes pour *.localhost).
+
+{$CIVIC_DOMAIN:civic.localhost} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "geolocation=(self), camera=(), microphone=()"
+		Content-Security-Policy "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'"
+	}
+
+	reverse_proxy core:8000
+}
+
+{$CIVIC_AGENDA_DOMAIN:agenda.civic.localhost} {
+	encode zstd gzip
+	reverse_proxy gancio:13120
+}

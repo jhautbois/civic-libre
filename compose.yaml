@@ -1,0 +1,87 @@
+# Civic Libre : démonstration clé en main.
+# `docker compose up` puis https://civic.localhost et https://agenda.civic.localhost
+# (certificats internes Caddy, avertissement navigateur normal en local).
+# Pour la production : voir docs/exploitation/installation.md.
+
+name: civic-libre
+
+x-civic-env: &civic-env
+  CIVIC_DEBUG: ${CIVIC_DEBUG:-0}
+  CIVIC_DOMAIN: ${CIVIC_DOMAIN:-civic.localhost}
+  CIVIC_AGENDA_DOMAIN: ${CIVIC_AGENDA_DOMAIN:-agenda.civic.localhost}
+  CIVIC_COMMUNE_NAME: ${CIVIC_COMMUNE_NAME:-Villebourg}
+  CIVIC_ACCENT_COLOR: ${CIVIC_ACCENT_COLOR:-#31597F}
+  CIVIC_SMTP_HOST: ${CIVIC_SMTP_HOST:-mailhog}
+  CIVIC_SMTP_PORT: ${CIVIC_SMTP_PORT:-1025}
+  CIVIC_SMTP_USER: ${CIVIC_SMTP_USER:-}
+  CIVIC_SMTP_PASSWORD: ${CIVIC_SMTP_PASSWORD:-}
+  CIVIC_SMTP_TLS: ${CIVIC_SMTP_TLS:-0}
+  CIVIC_SMTP_FROM: ${CIVIC_SMTP_FROM:-mairie@civic.localhost}
+  CIVIC_GEOCODING_URL: ${CIVIC_GEOCODING_URL:-https://data.geopf.fr/geocodage}
+  CIVIC_TILES_URL: ${CIVIC_TILES_URL:-https://tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png}
+  CIVIC_OPERATOR_EMAIL: ${CIVIC_OPERATOR_EMAIL:-}
+  GANCIO_API_URL: http://gancio:13120
+
+services:
+  caddy:
+    image: caddy:2.10
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      CIVIC_DOMAIN: ${CIVIC_DOMAIN:-civic.localhost}
+      CIVIC_AGENDA_DOMAIN: ${CIVIC_AGENDA_DOMAIN:-agenda.civic.localhost}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - core
+      - gancio
+
+  core:
+    build: ./backend
+    restart: unless-stopped
+    environment: *civic-env
+    volumes:
+      - core_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/sante"]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+
+  worker:
+    build: ./backend
+    restart: unless-stopped
+    entrypoint: ["python", "manage.py", "run_worker"]
+    environment: *civic-env
+    volumes:
+      - core_data:/data
+    depends_on:
+      core:
+        condition: service_healthy
+
+  gancio:
+    image: cisti/gancio:1.28.2@sha256:8cbf23952cf86de5a41cfb1361aa848d5741061163aed7c0da30b704ccb43b73
+    restart: unless-stopped
+    environment:
+      GANCIO_DATA: /home/node/data
+    volumes:
+      - gancio_data:/home/node/data
+      - ./gancio/config.json:/home/node/data/config.json
+
+  # Boîte aux lettres de démonstration : http://localhost:8025
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+
+volumes:
+  caddy_data:
+  caddy_config:
+  core_data:
+  gancio_data:

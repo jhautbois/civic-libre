@@ -1,0 +1,43 @@
+[project]
+name = "civic-libre"
+version = "0.1.0"
+description = "Application citoyenne municipale libre : agenda, signalements Open311, notifications"
+requires-python = ">=3.12"
+license = "AGPL-3.0-or-later"
+dependencies = [
+    "Django>=5.2,<5.3",
+    "gunicorn>=23",
+    "whitenoise>=6.9",
+    "pillow>=11",
+    "pywebpush>=2.0",
+    "requests>=2.32",
+    "argon2-cffi>=23",
+]
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = []
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "pytest-django>=4.9",
+    "ruff>=0.9",
+    "pyyaml>=6",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "civic.settings"
+pythonpath = ["."]
+testpaths = ["tests", "apps"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "DJ"]
