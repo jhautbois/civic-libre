@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Installer les dépendances
+        working-directory: backend
+        run: pip install -e . --group dev
+      - name: Ruff (lint et format)
+        working-directory: backend
+        run: |
+          ruff check .
+          ruff format --check .
+
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Installer les dépendances
+        working-directory: backend
+        run: pip install -e . --group dev
+      - name: Tests
+        working-directory: backend
+        run: pytest
+
+  a11y:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Installer les dépendances
+        working-directory: backend
+        run: |
+          pip install -e . --group dev
+          playwright install --with-deps chromium
+      - name: Contrôles axe-core
+        working-directory: backend
+        run: pytest -m a11y
+
+  compose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Valider compose.yaml
+        run: docker compose config -q

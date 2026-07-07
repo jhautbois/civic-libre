@@ -1,0 +1,25 @@
+{% extends "ui/base.html" %}
+
+{% block title %}Connexion – {{ civic.COMMUNE_NAME }}{% endblock %}
+
+{% block content %}
+<h1>Espace agents</h1>
+
+<form method="post" class="card form-stack" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}
+  <div class="banner-alert" role="alert">
+    Identifiants incorrects. Vérifiez le nom d'utilisateur et le mot de passe.
+  </div>
+  {% endif %}
+  <div>
+    <label for="{{ form.username.id_for_label }}">Nom d'utilisateur</label>
+    {{ form.username }}
+  </div>
+  <div>
+    <label for="{{ form.password.id_for_label }}">Mot de passe</label>
+    {{ form.password }}
+  </div>
+  <button type="submit" class="btn btn-primary">Se connecter</button>
+</form>
+{% endblock %}

@@ -25,3 +25,7 @@ build/
 *.log
 data/
 volumes/
+.data/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/

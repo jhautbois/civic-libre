@@ -1,0 +1,57 @@
+{% extends "ui/base.html" %}
+
+{% block content %}
+<h1>{{ civic.COMMUNE_NAME }}</h1>
+
+{% if alerts %}
+<section aria-labelledby="titre-alertes">
+  <h2 id="titre-alertes" class="sr-only">Alertes en cours</h2>
+  {% for a in alerts %}
+  <article class="card card-alert">
+    <p class="badge-alert">Alerte</p>
+    <h3><a href="{{ a.get_absolute_url }}">{{ a.title }}</a></h3>
+    <p>{{ a.body|truncatewords:30 }}</p>
+  </article>
+  {% endfor %}
+</section>
+{% endif %}
+
+{% if news %}
+<section aria-labelledby="titre-actus">
+  <h2 id="titre-actus">Actualités</h2>
+  <ul class="card-list">
+    {% for a in news %}
+    <li class="card">
+      <h3><a href="{{ a.get_absolute_url }}">{{ a.title }}</a></h3>
+      <p class="meta">{{ a.published_at|date:"j F Y" }}{% if a.is_pinned %} · épinglée{% endif %}</p>
+      <p>{{ a.body|truncatewords:25 }}</p>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<section aria-labelledby="titre-agenda">
+  <h2 id="titre-agenda">Prochains événements</h2>
+  {% if upcoming_events %}
+    <ul class="card-list">
+      {% for event in upcoming_events %}
+      <li class="card">
+        <div class="event-row">
+          {% include "events/_date_tile.html" %}
+          <div>
+            <h3><a href="{{ event.get_absolute_url }}">{{ event.title }}</a></h3>
+            <p class="meta">
+              {{ event.starts_at|date:"l j F, H\hi"|capfirst }}{% if event.place_name %} · {{ event.place_name }}{% endif %}
+            </p>
+          </div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+    <p><a href="{% url 'events:list' %}">Voir tout l'agenda</a></p>
+  {% else %}
+    <p class="empty">Aucun événement à venir. Le prochain apparaîtra ici.</p>
+  {% endif %}
+</section>
+{% endblock %}

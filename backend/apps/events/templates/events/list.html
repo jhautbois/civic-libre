@@ -1,0 +1,38 @@
+{% extends "ui/base.html" %}
+
+{% block title %}Agenda – {{ civic.COMMUNE_NAME }}{% endblock %}
+
+{% block content %}
+<h1>Agenda</h1>
+
+<div class="feed-links">
+  <a class="btn btn-secondary" href="{% url 'events_ics' %}">S'abonner (calendrier)</a>
+  <a class="btn btn-secondary" href="{% url 'events_rss' %}">Flux RSS</a>
+</div>
+
+{% if events %}
+  <ul class="card-list">
+    {% for event in events %}
+    <li class="card">
+      <div class="event-row">
+        {% include "events/_date_tile.html" %}
+        <div>
+          <h2><a href="{{ event.get_absolute_url }}">{{ event.title }}</a></h2>
+          <p class="meta">
+            {{ event.starts_at|date:"l j F, H\hi"|capfirst }}{% if event.place_name %} · {{ event.place_name }}{% endif %}
+          </p>
+        </div>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+
+  {% if page_obj.has_next %}
+  <div class="pager">
+    <a class="btn btn-secondary" href="?page={{ page_obj.next_page_number }}">Voir plus d'événements</a>
+  </div>
+  {% endif %}
+{% else %}
+  <p class="empty">Aucun événement à venir. Le prochain apparaîtra ici.</p>
+{% endif %}
+{% endblock %}
