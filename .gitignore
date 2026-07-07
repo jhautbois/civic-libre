@@ -1,0 +1,27 @@
+# Système
+.DS_Store
+Thumbs.db
+
+# Éditeurs
+.idea/
+.vscode/
+*.swp
+
+# Environnement et secrets
+.env
+.env.*
+!.env.example
+
+# Dépendances
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Build, données, journaux
+dist/
+build/
+*.log
+data/
+volumes/
