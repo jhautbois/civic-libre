@@ -18,7 +18,7 @@ ICON_SIZES = (192, 512)
 
 @require_GET
 def service_worker(request):
-    content = render_to_string("ui/sw.js", {"version": "1"})
+    content = render_to_string("ui/sw.js", {"version": "2"})
     response = HttpResponse(content, content_type="application/javascript")
     response["Service-Worker-Allowed"] = "/"
     return response

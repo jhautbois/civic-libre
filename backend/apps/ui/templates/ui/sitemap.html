@@ -1,0 +1,29 @@
+{% extends "ui/base.html" %}
+
+{% block title %}Plan du site – {{ civic.COMMUNE_NAME }}{% endblock %}
+
+{% block content %}
+<h1>Plan du site</h1>
+
+<div class="card">
+  <h2>Pour les habitants</h2>
+  <ul>
+    <li><a href="{% url 'ui:home' %}">Accueil : alertes, actualités, prochains événements</a></li>
+    <li><a href="{% url 'events:list' %}">Agenda des événements</a></li>
+    <li><a href="{% url 'reports:create' %}">Signaler un problème</a></li>
+    <li><a href="{% url 'push:settings' %}">Notifications</a></li>
+    <li><a href="{% url 'ui:infos' %}">Infos pratiques et abonnements (iCal, RSS)</a></li>
+  </ul>
+
+  <h2>À propos</h2>
+  <ul>
+    <li><a href="{% url 'ui:privacy' %}">Vos données</a></li>
+    <li><a href="{% url 'ui:accessibility' %}">Accessibilité</a></li>
+  </ul>
+
+  <h2>Pour la mairie</h2>
+  <ul>
+    <li><a href="{% url 'login' %}">Espace agents</a></li>
+  </ul>
+</div>
+{% endblock %}

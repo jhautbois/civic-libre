@@ -1,12 +1,31 @@
 /* Service worker Civic Libre, version {{ version }}.
-   Lot 6 : réception des notifications. Lot 7 : cache hors-ligne. */
+   Notifications push + hors-ligne de base (docs/design.md). */
 
-self.addEventListener("install", function () {
-  self.skipWaiting();
+var CACHE = "civic-v{{ version }}";
+var PRECACHE = ["/", "/hors-ligne/"];
+
+self.addEventListener("install", function (event) {
+  event.waitUntil(
+    caches.open(CACHE).then(function (cache) {
+      return cache.addAll(PRECACHE);
+    }).then(function () {
+      return self.skipWaiting();
+    })
+  );
 });
 
 self.addEventListener("activate", function (event) {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    caches.keys().then(function (keys) {
+      return Promise.all(keys.filter(function (key) {
+        return key !== CACHE;
+      }).map(function (key) {
+        return caches.delete(key);
+      }));
+    }).then(function () {
+      return self.clients.claim();
+    })
+  );
 });
 
 self.addEventListener("push", function (event) {
@@ -43,5 +62,45 @@ self.addEventListener("notificationclick", function (event) {
   );
 });
 
-/* Présence d'un gestionnaire fetch : critère d'installabilité. */
-self.addEventListener("fetch", function () {});
+self.addEventListener("fetch", function (event) {
+  var request = event.request;
+  if (request.method !== "GET") {
+    return;
+  }
+  var url = new URL(request.url);
+  if (url.origin !== self.location.origin) {
+    return;
+  }
+
+  /* Navigation : réseau d'abord, page hors-ligne en secours. */
+  if (request.mode === "navigate") {
+    event.respondWith(
+      fetch(request).catch(function () {
+        return caches.match(request).then(function (cached) {
+          return cached || caches.match("/hors-ligne/");
+        });
+      })
+    );
+    return;
+  }
+
+  /* Statiques (empreintés) et icônes : cache d'abord. */
+  if (url.pathname.indexOf("/static/") === 0 || url.pathname.indexOf("/icone-") === 0) {
+    event.respondWith(
+      caches.match(request).then(function (cached) {
+        if (cached) {
+          return cached;
+        }
+        return fetch(request).then(function (response) {
+          if (response.ok) {
+            var copy = response.clone();
+            caches.open(CACHE).then(function (cache) {
+              cache.put(request, copy);
+            });
+          }
+          return response;
+        });
+      })
+    );
+  }
+});

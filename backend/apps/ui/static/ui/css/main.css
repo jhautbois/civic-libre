@@ -1,5 +1,29 @@
-/* Civic Libre : tokens et base du système de design (docs/design.md).
-   Tokens minimaux du lot 1, consolidés au lot 7. */
+/* Civic Libre : tokens et base du système de design (docs/design.md). */
+
+/* Fontes libres auto-hébergées (OFL), voir vendor/fonts/README.md */
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("../../vendor/fonts/bricolage-grotesque-latin-700-normal.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  src: url("../../vendor/fonts/source-sans-3-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  src: url("../../vendor/fonts/source-sans-3-latin-600-normal.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   /* Couleurs de base (thème clair) */
@@ -474,5 +498,40 @@ legend {
   *, *::before, *::after {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+/* Thème sombre : mêmes tokens, re-dérivés pour tenir les ratios
+   (docs/design.md). Les couleurs fonctionnelles s'éclaircissent. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #15171B;
+    --card: #1E2126;
+    --ink: #E7E5E0;
+    --ink-soft: #A8ADB8;
+    --line: #33373E;
+    --accent: #4E7FAB;
+    --accent-ink: #8FB4D6;
+    --accent-surface: #232B33;
+    --status-new: #E0A366;
+    --status-progress: #7FA7F0;
+    --status-resolved: #7CC08D;
+    --status-rejected: #A8A29E;
+    --alert: #F08A80;
+  }
+
+  .banner-alert {
+    background: #3A2320;
+    color: #F5B8B1;
+    border-color: #F08A80;
+  }
+
+  .badge-alert {
+    background: #B42318;
+  }
+
+  .shadow-card,
+  .card {
+    box-shadow: none;
   }
 }
