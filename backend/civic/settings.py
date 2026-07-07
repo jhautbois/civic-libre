@@ -82,7 +82,7 @@ INSTALLED_APPS = [
 ]
 
 LOGIN_URL = "/gestion/connexion/"
-LOGIN_REDIRECT_URL = "/gestion/annonces/"
+LOGIN_REDIRECT_URL = "/gestion/signalements/"
 LOGOUT_REDIRECT_URL = "/"
 
 MIDDLEWARE = [

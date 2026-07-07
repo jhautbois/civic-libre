@@ -419,6 +419,41 @@ legend {
   margin-bottom: 0.5rem;
 }
 
+/* Back-office : filtres et actions */
+.manage-filters {
+  display: flex;
+  gap: 0.75rem;
+  align-items: end;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.manage-filters label {
+  font-weight: 600;
+  display: block;
+}
+
+.manage-filters select {
+  font: inherit;
+  min-height: 44px;
+  padding: 0.375rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+}
+
+.inline-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.moderation-item {
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+
 /* États vides */
 .empty {
   color: var(--ink-soft);

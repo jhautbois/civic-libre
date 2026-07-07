@@ -121,6 +121,30 @@ class Report(models.Model):
         raise IntegrityError("Impossible d'attribuer une référence de signalement")
 
 
+class ReportUpdate(models.Model):
+    """Transition de statut, exposée par l'extension Open311
+    servicerequestupdates (format FixMyStreet, docs/spec.md)."""
+
+    report = models.ForeignKey(
+        Report, verbose_name="signalement", related_name="updates", on_delete=models.CASCADE
+    )
+    old_status = models.CharField("ancien statut", max_length=20, choices=Report.Status.choices)
+    new_status = models.CharField("nouveau statut", max_length=20, choices=Report.Status.choices)
+    public_comment = models.TextField("commentaire public", max_length=1000, blank=True)
+    media_url = models.URLField("photo jointe", max_length=500, blank=True)
+    author = models.ForeignKey(
+        "auth.User", verbose_name="auteur", null=True, on_delete=models.SET_NULL
+    )
+    created_at = models.DateTimeField("créée le", default=timezone.now)
+
+    class Meta:
+        verbose_name = "mise à jour de signalement"
+        ordering = ["created_at"]
+
+    def __str__(self):
+        return f"{self.report.reference} : {self.get_new_status_display()}"
+
+
 class ReportPhoto(models.Model):
     class Moderation(models.TextChoices):
         PENDING = "pending", "En attente"

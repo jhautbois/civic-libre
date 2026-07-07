@@ -1,13 +1,16 @@
 """Couche service : une seule voie de création de signalement, partagée
-par le formulaire citoyen et le POST Open311 (docs/spec.md)."""
+par le formulaire citoyen et le POST Open311 (docs/spec.md), et une
+seule voie de transition de statut."""
 
 import os
 
 from django.core.exceptions import ValidationError
+from django.db import transaction
+from django.utils import timezone
 
-from . import geocoding
+from . import geocoding, notifications
 from .images import make_thumbnail, reencode_image
-from .models import Category, Report, ReportPhoto
+from .models import Category, Report, ReportPhoto, ReportUpdate
 
 
 def create_report(
@@ -60,4 +63,40 @@ def create_report(
         photo.thumbnail.save(f"{report.reference}-{base}-min.jpg", thumb, save=False)
         photo.save()
 
+    transaction.on_commit(lambda: notifications.notify_department(report))
     return report
+
+
+def transition_report(
+    *,
+    report: Report,
+    new_status: str,
+    author,
+    public_comment: str = "",
+    rejection_reason: str = "",
+) -> ReportUpdate:
+    """Unique voie de changement de statut : historise, clôt, notifie."""
+    if new_status not in Report.Status.values:
+        raise ValidationError({"new_status": "Statut inconnu."})
+    if new_status == report.status:
+        raise ValidationError({"new_status": "Le signalement est déjà dans ce statut."})
+    if new_status == Report.Status.REJECTED and not rejection_reason.strip():
+        raise ValidationError({"rejection_reason": "Indiquez le motif du rejet."})
+
+    update = ReportUpdate(
+        report=report,
+        old_status=report.status,
+        new_status=new_status,
+        public_comment=public_comment.strip()[:1000],
+        author=author,
+    )
+    report.status = new_status
+    report.rejection_reason = rejection_reason.strip()[:300]
+    report.closed_at = (
+        timezone.now() if new_status in (Report.Status.RESOLVED, Report.Status.REJECTED) else None
+    )
+    with transaction.atomic():
+        report.save()
+        update.save()
+    transaction.on_commit(lambda: notifications.notify_reporter(report, update))
+    return update
