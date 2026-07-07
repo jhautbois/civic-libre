@@ -23,4 +23,14 @@ urlpatterns = [
         TemplateView.as_view(template_name="ui/accessibility.html"),
         name="accessibility",
     ),
+    path(
+        "hors-ligne/",
+        TemplateView.as_view(template_name="ui/offline.html"),
+        name="offline",
+    ),
+    path(
+        "plan-du-site/",
+        TemplateView.as_view(template_name="ui/sitemap.html"),
+        name="sitemap",
+    ),
 ]

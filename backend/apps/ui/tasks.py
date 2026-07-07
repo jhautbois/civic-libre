@@ -7,12 +7,26 @@ exceptions et journalise.
 """
 
 from apps.events.sync import sync_gancio_events
+from apps.push.sender import (
+    purge_dead_subscriptions,
+    scan_announcements,
+    scan_events,
+    send_pending,
+)
+from apps.reports.anonymize import anonymize_reports
+from apps.ui.maintenance import check_backup_age, check_outbox_stuck, purge_tile_cache
 
 SHORT_TASKS: list = [
-    # Lot 6 : envoi de l'outbox de notifications, purge 404/410.
+    scan_announcements,  # une alerte publiée part en moins de 10 secondes
+    send_pending,
 ]
 
 LONG_TASKS: list = [
     sync_gancio_events,
-    # Lot 4 : anonymisation planifiée des signalements.
+    scan_events,
+    purge_dead_subscriptions,
+    anonymize_reports,
+    purge_tile_cache,
+    check_backup_age,
+    check_outbox_stuck,
 ]

@@ -1,0 +1,62 @@
+{% extends "ui/base.html" %}
+{% load static %}
+
+{% block title %}Notifications – {{ civic.COMMUNE_NAME }}{% endblock %}
+
+{% block content %}
+<h1>Notifications</h1>
+<p>Recevez les informations de la mairie directement sur votre téléphone ou votre
+ordinateur, sans application à installer depuis un magasin. C'est gratuit, sans compte,
+et vous pouvez arrêter à tout moment.</p>
+
+<div class="card form-stack" id="push-ui" hidden>
+  <fieldset>
+    <legend>Ce qui vous intéresse</legend>
+    <div class="check-row">
+      {% for code, label in topics %}
+      <label><input type="checkbox" name="sujet" value="{{ code }}" checked> {{ label }}</label>
+      {% endfor %}
+    </div>
+  </fieldset>
+  <p id="push-etat" role="status" class="meta"></p>
+  <div class="inline-actions">
+    <button type="button" id="push-abonner" class="btn btn-primary">Activer les notifications</button>
+    <button type="button" id="push-desabonner" class="btn btn-secondary" hidden>Désactiver</button>
+  </div>
+</div>
+
+<div class="card" id="push-non-supporte" hidden>
+  <p><strong>Votre navigateur ne permet pas encore les notifications sur cette page.</strong></p>
+  <p>Sur iPhone ou iPad, installez d'abord l'application sur votre écran d'accueil
+  (voir ci-dessous), puis revenez sur cette page depuis l'icône installée.</p>
+</div>
+
+<noscript>
+  <div class="card">
+    <p>Les notifications nécessitent JavaScript. Vous pouvez aussi suivre la commune
+    par <a href="{% url 'announcements_rss' %}">flux RSS</a> ou par
+    <a href="{% url 'events_ics' %}">calendrier (iCal)</a>.</p>
+  </div>
+</noscript>
+
+<section class="card" aria-labelledby="titre-ios">
+  <h2 id="titre-ios">Sur iPhone ou iPad : installer d'abord l'application</h2>
+  <p>Apple exige que l'application soit installée sur l'écran d'accueil pour recevoir
+  des notifications. Voici comment faire, étape par étape :</p>
+  <ol>
+    <li>Ouvrez ce site dans Safari (si vous êtes dans une autre application, touchez
+      le lien pour l'ouvrir dans Safari).</li>
+    <li>Touchez le bouton Partager : le carré avec une flèche vers le haut, au milieu
+      de la barre en bas de l'écran.</li>
+    <li>Faites défiler la liste et touchez « Sur l'écran d'accueil ».</li>
+    <li>Touchez « Ajouter » en haut à droite. L'icône {{ civic.COMMUNE_NAME }} apparaît
+      sur votre écran d'accueil.</li>
+    <li>Ouvrez l'application depuis cette nouvelle icône, revenez sur la page
+      Notifications et touchez « Activer les notifications ».</li>
+  </ol>
+  <p>Sur Android et sur ordinateur, le bouton « Activer les notifications » fonctionne
+  directement.</p>
+</section>
+
+<script src="{% static 'ui/js/push.js' %}" defer></script>
+{% endblock %}

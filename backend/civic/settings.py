@@ -51,6 +51,10 @@ CIVIC = {
         "CIVIC_TILES_URL", "https://a.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png"
     ),
     "OPERATOR_EMAIL": os.environ.get("CIVIC_OPERATOR_EMAIL", ""),
+    # Adresse de contact publique (demandes de retrait, art. 13).
+    "CONTACT_EMAIL": os.environ.get(
+        "CIVIC_CONTACT_EMAIL", os.environ.get("CIVIC_SMTP_FROM", f"mairie@{CIVIC_DOMAIN}")
+    ),
     "VAPID_FILE": DATA_DIR / "vapid.json",
     "HEARTBEAT_FILE": DATA_DIR / "worker-heartbeat",
     # Centre de la carte de signalement (bourg de la commune).
@@ -79,6 +83,7 @@ INSTALLED_APPS = [
     "apps.events",
     "apps.announcements",
     "apps.reports",
+    "apps.push",
 ]
 
 LOGIN_URL = "/gestion/connexion/"

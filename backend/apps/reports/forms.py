@@ -40,6 +40,7 @@ class ReportForm(forms.Form):
     reporter_email = forms.EmailField(
         label="Votre courriel",
         required=False,
+        widget=forms.EmailInput(attrs={"autocomplete": "email"}),
         help_text="Facultatif : pour être informé de l'avancement. Jamais publié.",
     )
     # Pot de miel anti-robots : champ invisible qui doit rester vide.

@@ -1,0 +1,12 @@
+{% extends "ui/base.html" %}
+
+{% block title %}Hors ligne – {{ civic.COMMUNE_NAME }}{% endblock %}
+
+{% block content %}
+<h1>Vous êtes hors ligne</h1>
+<div class="card">
+  <p>Impossible de joindre le site de {{ civic.COMMUNE_NAME }} pour le moment.
+  Vérifiez votre connexion, puis réessayez.</p>
+  <p><a class="btn btn-primary" href="/">Réessayer</a></p>
+</div>
+{% endblock %}

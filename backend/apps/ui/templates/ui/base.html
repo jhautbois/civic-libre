@@ -5,8 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}{{ civic.COMMUNE_NAME }}{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'ui/css/main.css' %}">
+  <link rel="stylesheet" href="{% url 'theme_css' %}">
   <link rel="alternate" type="application/rss+xml" title="Agenda de {{ civic.COMMUNE_NAME }}" href="{% url 'events_rss' %}">
   <link rel="alternate" type="application/rss+xml" title="Annonces de {{ civic.COMMUNE_NAME }}" href="{% url 'announcements_rss' %}">
+  <link rel="manifest" href="{% url 'manifest' %}">
+  <meta name="theme-color" content="{{ civic.ACCENT_COLOR }}">
+  <link rel="icon" href="{% url 'pwa_icon' 192 %}">
+  <link rel="apple-touch-icon" href="{% url 'pwa_icon' 192 %}">
+  <script src="{% static 'ui/js/app.js' %}" defer></script>
   {% block extra_head %}{% endblock %}
 </head>
 <body>
@@ -25,7 +31,8 @@
   <footer class="site-footer">
     <p>Application citoyenne libre de {{ civic.COMMUNE_NAME }}.
        <a href="{% url 'ui:privacy' %}">Vos données</a> ·
-       <a href="{% url 'ui:accessibility' %}">Accessibilité</a></p>
+       <a href="{% url 'ui:accessibility' %}">Accessibilité</a> ·
+       <a href="{% url 'ui:sitemap' %}">Plan du site</a></p>
   </footer>
   <nav class="nav-bottom" aria-label="Navigation principale">
     <a href="{% url 'ui:home' %}" {% if request.resolver_match.view_name == 'ui:home' %}aria-current="page"{% endif %}>Accueil</a>

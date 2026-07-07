@@ -179,3 +179,48 @@ class TestPhotoAcces:
         response = client.get(f"/signalements/photo/{photo.pk}/?jeton={report.tracking_token}")
         assert response.status_code == 200
         assert response["Content-Type"] == "image/jpeg"
+
+
+@pytest.mark.django_db
+class TestPhotoRefusee:
+    """Constat de revue : une photo invalide ne doit ni créer de
+    signalement orphelin, ni perdre la notification, ni renvoyer 500."""
+
+    def test_photo_trop_lourde_message_sans_signalement(self, client, categorie, monkeypatch):
+        # La limite est abaissée pour que la petite image de test la dépasse.
+        from apps.reports import images
+
+        monkeypatch.setattr(images, "MAX_UPLOAD_BYTES", 16)
+        buffer = io.BytesIO()
+        Image.new("RGB", (10, 10)).save(buffer, format="JPEG")
+        buffer.seek(0)
+
+        from django.core.files.uploadedfile import SimpleUploadedFile
+
+        payload = SimpleUploadedFile("enorme.jpg", buffer.read(), "image/jpeg")
+
+        response = client.post(
+            "/signaler/",
+            {
+                "category": categorie.pk,
+                "description": "Photo trop lourde",
+                "address": "rue A",
+                "website": "",
+                "photo": payload,
+            },
+        )
+        assert response.status_code == 200
+        assert "8 Mo" in response.content.decode()
+        assert Report.objects.count() == 0
+
+    def test_jeton_vide_ne_donne_jamais_acces_photo(self, client, categorie):
+        report = services.create_report(
+            category=categorie,
+            description="Dépôt",
+            address="rue A",
+            photo_file=_photo_avec_exif(),
+        )
+        photo = report.photos.get()
+        Report.objects.filter(pk=report.pk).update(tracking_token="")
+        assert client.get(f"/signalements/photo/{photo.pk}/?jeton=").status_code == 404
+        assert client.get(f"/signalements/photo/{photo.pk}/").status_code == 404

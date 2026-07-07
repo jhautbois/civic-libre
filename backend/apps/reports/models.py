@@ -112,9 +112,15 @@ class Report(models.Model):
         year = timezone.now().year
         kwargs.setdefault("tracking_token", secrets.token_urlsafe(32))
         for attempt in range(5):
-            seq = cls.objects.filter(reference__startswith=f"R-{year}-").count() + 1 + attempt
             try:
                 with transaction.atomic():
+                    # Le décompte se fait DANS la transaction immédiate :
+                    # SQLite sérialise les écrivains dès son ouverture, le
+                    # numéro ne peut donc plus être périmé au moment de
+                    # l'insertion (l'unicité reste le filet de sécurité).
+                    seq = (
+                        cls.objects.filter(reference__startswith=f"R-{year}-").count() + 1 + attempt
+                    )
                     return cls.objects.create(reference=f"R-{year}-{seq:04d}", **kwargs)
             except IntegrityError:
                 continue

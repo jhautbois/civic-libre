@@ -42,6 +42,14 @@ def create_report(
         if found:
             latitude, longitude, address = found
 
+    # La photo est traitée AVANT toute écriture en base : un fichier
+    # invalide ou trop lourd doit refuser le dépôt sans laisser de
+    # signalement orphelin ni perdre la notification au service.
+    main = thumb = None
+    if photo_file is not None:
+        main = reencode_image(photo_file)
+        thumb = make_thumbnail(photo_file)
+
     report = Report.create_with_reference(
         category=category,
         description=description[:4000],
@@ -54,9 +62,7 @@ def create_report(
         created_user_agent=user_agent[:300],
     )
 
-    if photo_file is not None:
-        main = reencode_image(photo_file)
-        thumb = make_thumbnail(photo_file)
+    if main is not None:
         base = os.path.splitext(os.path.basename(photo_file.name or "photo"))[0][:40] or "photo"
         photo = ReportPhoto(report=report)
         photo.image.save(f"{report.reference}-{base}.jpg", main, save=False)

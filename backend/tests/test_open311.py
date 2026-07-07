@@ -114,7 +114,14 @@ class TestLecture:
         assert data["status"] == "open"
         assert data["description"] == ""
         assert data["address"] == ""
-        assert data["lat"] == 47.39
+        assert data["lat"] == ""
+        assert data["status_notes"] == ""
+
+    def test_liste_exclut_les_non_publies(self, client, report):
+        assert client.get("/open311/v2/requests.json").json() == []
+        report.publication_state = Report.Publication.PUBLISHED
+        report.save()
+        assert len(client.get("/open311/v2/requests.json").json()) == 1
 
     def test_detail_complet_apres_publication(self, client, report):
         report.publication_state = Report.Publication.PUBLISHED
@@ -122,12 +129,15 @@ class TestLecture:
         data = client.get(f"/open311/v2/requests/{report.reference}.json").json()[0]
         assert "boulangerie" in data["description"]
         assert data["address"] == "1 Place de la Mairie"
+        assert data["lat"] == 47.39
 
     def test_courriel_jamais_expose(self, client, report):
         raw = client.get(f"/open311/v2/requests/{report.reference}.json").content.decode()
         assert "habitant@example.org" not in raw
 
     def test_liste_filtre_par_statut(self, client, report):
+        report.publication_state = Report.Publication.PUBLISHED
+        report.save()
         agent = User.objects.create_user("agent-x")
         services.transition_report(report=report, new_status="resolved", author=agent)
         assert client.get("/open311/v2/requests.json?status=open").json() == []
@@ -142,6 +152,8 @@ class TestLecture:
 @pytest.mark.django_db
 class TestUpdatesFixMyStreet:
     def test_format_exact(self, client, report):
+        report.publication_state = Report.Publication.PUBLISHED
+        report.save()
         agent = User.objects.create_user("agent-y")
         services.transition_report(
             report=report,
@@ -161,7 +173,21 @@ class TestUpdatesFixMyStreet:
         assert update.find("description").text == "Intervention planifiée"
 
     def test_statuts_etendus(self, client, report):
+        report.publication_state = Report.Publication.PUBLISHED
+        report.save()
         agent = User.objects.create_user("agent-z")
         services.transition_report(report=report, new_status="resolved", author=agent)
         data = client.get("/open311/v2/servicerequestupdates.json").json()
         assert data[-1]["status"] == "FIXED"
+
+    def test_updates_exclut_les_non_publies_et_les_media(self, client, report):
+        agent = User.objects.create_user("agent-w")
+        services.transition_report(report=report, new_status="in_progress", author=agent)
+        # Non publié : rien dans le flux public d'updates
+        assert client.get("/open311/v2/servicerequestupdates.json").json() == []
+        report.publication_state = Report.Publication.PUBLISHED
+        report.save()
+        data = client.get("/open311/v2/servicerequestupdates.json").json()
+        assert len(data) == 1
+        # media_url du déclarant jamais republiée sans modération
+        assert data[0]["media_url"] == ""

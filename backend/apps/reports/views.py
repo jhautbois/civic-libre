@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.http import FileResponse, Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import FormView, TemplateView
@@ -24,7 +25,24 @@ class ReportCreateView(FormView):
 
     def form_valid(self, form):
         data = form.cleaned_data
-        report = services.create_report(
+        try:
+            report = self._create(data)
+        except ValidationError as exc:
+            # Photo refusée (taille, format) ou données invalides : le
+            # message français revient au formulaire, jamais une erreur 500.
+            if getattr(exc, "error_dict", None):
+                for field, errors in exc.message_dict.items():
+                    target = field if field in form.fields else None
+                    for error in errors:
+                        form.add_error(target, error)
+            else:
+                for error in exc.messages:
+                    form.add_error("photo", error)
+            return self.form_invalid(form)
+        return redirect(f"{report.get_absolute_url()}?jeton={report.tracking_token}&nouveau=1")
+
+    def _create(self, data):
+        return services.create_report(
             category=data["category"],
             description=data["description"],
             latitude=data.get("latitude"),
@@ -36,7 +54,6 @@ class ReportCreateView(FormView):
             ip=throttle.client_ip(self.request),
             user_agent=self.request.META.get("HTTP_USER_AGENT", ""),
         )
-        return redirect(f"{report.get_absolute_url()}?jeton={report.tracking_token}&nouveau=1")
 
 
 class TrackingView(TemplateView):
@@ -71,7 +88,10 @@ def photo(request, photo_id):
     photo = get_object_or_404(ReportPhoto, pk=photo_id)
     approved = photo.moderation_state == ReportPhoto.Moderation.APPROVED
     published = photo.report.publication_state == Report.Publication.PUBLISHED
-    is_owner = request.GET.get("jeton", "") == photo.report.tracking_token
+    # Un jeton vide ne fait jamais foi (même garde que TrackingView) :
+    # un signalement anonymisé a un jeton vide en base.
+    token = request.GET.get("jeton", "")
+    is_owner = bool(token) and token == photo.report.tracking_token
     is_agent = request.user.is_authenticated and request.user.has_perm("reports.view_report")
     if not ((approved and published) or is_owner or is_agent):
         raise Http404
