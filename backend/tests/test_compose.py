@@ -19,6 +19,15 @@ def test_worker_partage_les_donnees_du_coeur():
     assert "core_data:/data" in config["services"]["core"]["volumes"]
 
 
+def test_worker_utilise_l_image_du_coeur():
+    """Le worker exécute EXACTEMENT le même code que l'application :
+    une seule image, jamais de build séparé (régression réelle : un
+    worker resté sur une vieille image ne synchronisait plus rien)."""
+    config = yaml.safe_load(COMPOSE.read_text())
+    assert config["services"]["worker"]["image"] == config["services"]["core"]["image"]
+    assert "build" not in config["services"]["worker"]
+
+
 def test_gancio_epingle_par_digest():
     """ADR 0003 : l'image Gancio est épinglée par digest, pas seulement par tag."""
     config = yaml.safe_load(COMPOSE.read_text())

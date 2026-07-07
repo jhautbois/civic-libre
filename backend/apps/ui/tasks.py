@@ -13,6 +13,8 @@ from apps.push.sender import (
     scan_events,
     send_pending,
 )
+from apps.reports.anonymize import anonymize_reports
+from apps.ui.maintenance import check_backup_age, check_outbox_stuck, purge_tile_cache
 
 SHORT_TASKS: list = [
     scan_announcements,  # une alerte publiée part en moins de 10 secondes
@@ -23,5 +25,8 @@ LONG_TASKS: list = [
     sync_gancio_events,
     scan_events,
     purge_dead_subscriptions,
-    # Lot 8 : anonymisation planifiée des signalements.
+    anonymize_reports,
+    purge_tile_cache,
+    check_backup_age,
+    check_outbox_stuck,
 ]

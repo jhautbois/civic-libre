@@ -9,4 +9,8 @@ python manage.py createcachetable
 python manage.py ensure_vapid
 python manage.py collectstatic --noinput
 
+if [ "${CIVIC_DEMO:-0}" = "1" ]; then
+    python manage.py seed_demo
+fi
+
 exec "$@"
