@@ -9,8 +9,9 @@ from apps.announcements.models import Announcement
 
 
 def _make(title="Travaux rue de l'Église", level="info", **kwargs):
-    return Announcement.objects.create(title=title, body="Texte de l'annonce.",
-                                       level=level, **kwargs)
+    return Announcement.objects.create(
+        title=title, body="Texte de l'annonce.", level=level, **kwargs
+    )
 
 
 @pytest.fixture

@@ -18,8 +18,11 @@ x-civic-env: &civic-env
   CIVIC_SMTP_TLS: ${CIVIC_SMTP_TLS:-0}
   CIVIC_SMTP_FROM: ${CIVIC_SMTP_FROM:-mairie@civic.localhost}
   CIVIC_GEOCODING_URL: ${CIVIC_GEOCODING_URL:-https://data.geopf.fr/geocodage}
-  CIVIC_TILES_URL: ${CIVIC_TILES_URL:-https://tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png}
+  CIVIC_TILES_URL: ${CIVIC_TILES_URL:-https://a.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png}
   CIVIC_OPERATOR_EMAIL: ${CIVIC_OPERATOR_EMAIL:-}
+  CIVIC_CENTER_LAT: ${CIVIC_CENTER_LAT:-47.3900}
+  CIVIC_CENTER_LON: ${CIVIC_CENTER_LON:-0.6889}
+  CIVIC_CENTER_ZOOM: ${CIVIC_CENTER_ZOOM:-15}
   GANCIO_API_URL: http://gancio:13120
 
 services:

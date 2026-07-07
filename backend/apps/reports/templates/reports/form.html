@@ -1,0 +1,93 @@
+{% extends "ui/base.html" %}
+{% load static %}
+
+{% block title %}Signaler un problème – {{ civic.COMMUNE_NAME }}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'vendor/leaflet/leaflet.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1>Signaler un problème</h1>
+<p>Un trou dans la chaussée, un lampadaire en panne, un dépôt sauvage :
+décrivez le problème, la mairie s'en occupe.</p>
+
+<form method="post" enctype="multipart/form-data" class="card form-stack" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}
+  <div class="banner-alert" role="alert">{{ form.non_field_errors }}</div>
+  {% endif %}
+
+  <fieldset>
+    <legend>1. La catégorie</legend>
+    <div{% if form.category.errors %} aria-invalid="true"{% endif %}>
+      {{ form.category }}
+      {{ form.category.errors }}
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>2. L'emplacement</legend>
+    <div id="carte-bloc" hidden>
+      <div id="carte" class="report-map" role="region"
+           aria-label="Carte interactive pour placer le point. Alternative : le champ adresse ci-dessous."></div>
+      <p class="meta">
+        Touchez la carte pour placer le point,
+        <button type="button" id="ma-position" class="btn btn-secondary btn-compact">ou utilisez ma position</button>
+      </p>
+      <p class="meta" id="adresse-resolue" aria-live="polite"></p>
+    </div>
+    <div>
+      <label for="{{ form.address.id_for_label }}">{{ form.address.label }}</label>
+      {{ form.address }}
+      <p class="helptext" id="aide-adresse">{{ form.address.help_text }}</p>
+      {{ form.address.errors }}
+    </div>
+    <div>
+      <label for="{{ form.location_hint.id_for_label }}">{{ form.location_hint.label }}</label>
+      {{ form.location_hint }}
+      <p class="helptext">{{ form.location_hint.help_text }}</p>
+    </div>
+    {{ form.latitude }}{{ form.longitude }}
+  </fieldset>
+
+  <fieldset>
+    <legend>3. Le problème</legend>
+    <div>
+      <label for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+      {{ form.description }}
+      {{ form.description.errors }}
+    </div>
+    <div>
+      <label for="{{ form.photo.id_for_label }}">{{ form.photo.label }}</label>
+      {{ form.photo }}
+      <p class="helptext">{{ form.photo.help_text }}</p>
+      {{ form.photo.errors }}
+    </div>
+    <div>
+      <label for="{{ form.reporter_email.id_for_label }}">{{ form.reporter_email.label }}</label>
+      {{ form.reporter_email }}
+      <p class="helptext">{{ form.reporter_email.help_text }}</p>
+      {{ form.reporter_email.errors }}
+    </div>
+  </fieldset>
+
+  <div class="honeypot">
+    <label for="{{ form.website.id_for_label }}">Ne pas remplir ce champ</label>
+    {{ form.website }}
+  </div>
+
+  <p class="helptext">
+    Ces informations sont traitées par la mairie de {{ civic.COMMUNE_NAME }} pour le suivi
+    des signalements (mission d'intérêt public). Votre courriel n'est jamais publié.
+    <a href="{% url 'ui:privacy' %}">En savoir plus sur vos données</a>.
+  </p>
+
+  <button type="submit" class="btn btn-primary">Envoyer le signalement</button>
+</form>
+
+<script src="{% static 'vendor/leaflet/leaflet.js' %}" defer></script>
+<script src="{% static 'ui/js/map.js' %}" defer
+        data-lat="{{ civic.CENTER_LAT }}" data-lon="{{ civic.CENTER_LON }}"
+        data-zoom="{{ civic.CENTER_ZOOM }}" id="map-config"></script>
+{% endblock %}

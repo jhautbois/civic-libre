@@ -48,11 +48,24 @@ CIVIC = {
     "GANCIO_API_URL": os.environ.get("GANCIO_API_URL", "http://gancio:13120"),
     "GEOCODING_URL": os.environ.get("CIVIC_GEOCODING_URL", "https://data.geopf.fr/geocodage"),
     "TILES_URL": os.environ.get(
-        "CIVIC_TILES_URL", "https://tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png"
+        "CIVIC_TILES_URL", "https://a.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png"
     ),
     "OPERATOR_EMAIL": os.environ.get("CIVIC_OPERATOR_EMAIL", ""),
     "VAPID_FILE": DATA_DIR / "vapid.json",
     "HEARTBEAT_FILE": DATA_DIR / "worker-heartbeat",
+    # Centre de la carte de signalement (bourg de la commune).
+    "CENTER_LAT": os.environ.get("CIVIC_CENTER_LAT", "47.3900"),
+    "CENTER_LON": os.environ.get("CIVIC_CENTER_LON", "0.6889"),
+    "CENTER_ZOOM": os.environ.get("CIVIC_CENTER_ZOOM", "15"),
+}
+
+# Cache partagé entre gunicorn et le worker (limitation de débit) :
+# en base, pour rester cohérent entre processus sans service de plus.
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "civic_cache",
+    }
 }
 
 INSTALLED_APPS = [
@@ -65,6 +78,7 @@ INSTALLED_APPS = [
     "apps.ui",
     "apps.events",
     "apps.announcements",
+    "apps.reports",
 ]
 
 LOGIN_URL = "/gestion/connexion/"

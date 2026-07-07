@@ -1,0 +1,23 @@
+{% extends "ui/base.html" %}
+
+{% block title %}Accessibilité – {{ civic.COMMUNE_NAME }}{% endblock %}
+
+{% block content %}
+<h1>Accessibilité</h1>
+
+<div class="card">
+  <p><strong>Accessibilité : non conforme.</strong> Cette mention s'applique tant qu'un
+  audit complet selon la méthodologie RGAA n'a pas été réalisé et publié. L'application est
+  néanmoins conçue pour l'accessibilité : navigation au clavier, alternatives aux images et
+  à la carte, contrastes contrôlés, fonctionnement sans JavaScript.</p>
+
+  <p>La déclaration d'accessibilité complète (audit RGAA, schéma pluriannuel) est de la
+  responsabilité de la commune ; des modèles sont fournis avec l'application
+  (docs/exploitation).</p>
+
+  <h2>Signaler un défaut d'accessibilité</h2>
+  <p>Si vous rencontrez un obstacle, écrivez à la mairie de {{ civic.COMMUNE_NAME }} en
+  décrivant la page et le problème. Si vous n'obtenez pas de réponse, vous pouvez saisir
+  le Défenseur des droits.</p>
+</div>
+{% endblock %}

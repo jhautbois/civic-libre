@@ -1,0 +1,44 @@
+{% extends "ui/base.html" %}
+
+{% block title %}Vos données – {{ civic.COMMUNE_NAME }}{% endblock %}
+
+{% block content %}
+<h1>Vos données</h1>
+
+<div class="card">
+  <p>Cette application est un service public de la commune de {{ civic.COMMUNE_NAME }},
+  responsable du traitement. Elle est conçue pour collecter le moins de données possible :
+  pas de compte, pas de traceur, pas de publicité.</p>
+
+  <h2>Signalements</h2>
+  <p>Quand vous signalez un problème, la mairie traite la description, la position du
+  problème, la photo éventuelle et, si vous le donnez, votre courriel (pour vous informer
+  de l'avancement ; il n'est jamais publié). Base légale : mission d'intérêt public
+  (article 6.1.e du RGPD). La description et la photo ne sont rendues publiques qu'après
+  vérification par un agent. La loi impose de conserver 12 mois l'adresse IP à l'origine
+  d'un contenu publié (article 6 de la LCEN). Les données personnelles d'un signalement
+  sont supprimées au plus tard 12 mois après sa clôture, et 24 mois après son dépôt dans
+  tous les cas.</p>
+
+  <h2>Notifications</h2>
+  <p>Les notifications sont activées uniquement si vous le demandez (consentement) et se
+  désactivent à tout moment dans les réglages de votre navigateur ou sur la page
+  notifications. Leur acheminement passe, chiffré, par les serveurs de l'éditeur de votre
+  navigateur (Google, Apple, Mozilla ou Microsoft selon le cas).</p>
+
+  <h2>Carte</h2>
+  <p>Les fonds de carte sont relayés par le serveur de la commune : votre adresse IP n'est
+  pas transmise au fournisseur de cartes. La recherche d'adresse utilise le service public
+  de géocodage national (IGN, Base Adresse Nationale).</p>
+
+  <h2>Vos droits</h2>
+  <p>Vous pouvez accéder à vos données, les faire rectifier ou effacer, et vous opposer à
+  leur traitement, en écrivant à la mairie. Vous pouvez aussi saisir la CNIL. Pour demander
+  le retrait d'un contenu publié, utilisez le lien présent sur la page du signalement ou
+  contactez la mairie.</p>
+
+  <p class="meta">Ce service n'est pas destiné spécifiquement aux mineurs et ne collecte
+  aucune donnée d'âge. La commune complètera cette page avec les coordonnées de son
+  délégué à la protection des données.</p>
+</div>
+{% endblock %}

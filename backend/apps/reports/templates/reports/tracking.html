@@ -1,0 +1,53 @@
+{% extends "ui/base.html" %}
+
+{% block title %}Signalement {{ report.reference }} – {{ civic.COMMUNE_NAME }}{% endblock %}
+
+{% block content %}
+{% if is_new %}
+<div class="banner-info" role="status">
+  <strong>Merci, votre signalement est enregistré.</strong>
+  Conservez cette page dans vos favoris pour suivre son avancement.
+  {% if report.reporter_email %}Vous serez informé par courriel.{% endif %}
+</div>
+{% endif %}
+
+<article class="card">
+  <h1>Signalement {{ report.reference }}</h1>
+  <p>
+    <span class="status-dot status-{{ report.status }}" aria-hidden="true"></span>
+    <strong>{{ report.get_status_display }}</strong>
+    {% if report.status == 'rejected' and report.rejection_reason %}
+      · {{ report.rejection_reason }}
+    {% endif %}
+  </p>
+  <p class="meta">{{ report.category.name }} · déposé le {{ report.created_at|date:"j F Y" }}</p>
+
+  {% if show_content %}
+    {% if report.address %}<p class="meta">{{ report.address }}
+      {% if report.location_hint %}({{ report.location_hint }}){% endif %}</p>{% endif %}
+    <div>{{ report.description|linebreaks }}</div>
+    {% for photo in photos %}
+    <p><img class="event-image" src="{% url 'reports:photo' photo.pk %}?taille=min{% if is_owner %}&jeton={{ report.tracking_token }}{% endif %}" alt="{{ photo.alt_text }}"></p>
+    {% endfor %}
+    {% if is_owner and report.publication_state == 'pending' %}
+    <p class="meta">Votre signalement sera visible publiquement après vérification par la mairie.</p>
+    {% endif %}
+  {% else %}
+    <p class="meta">Le détail sera visible après vérification par la mairie.</p>
+  {% endif %}
+
+  {% if updates %}
+  <h2>Suivi</h2>
+  <ul class="card-list">
+    {% for update in updates %}
+    <li>
+      <p><strong>{{ update.get_new_status_display }}</strong> · {{ update.created_at|date:"j F Y" }}</p>
+      {% if update.public_comment %}<p>{{ update.public_comment }}</p>{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</article>
+
+<p><a class="btn btn-secondary" href="{% url 'reports:create' %}">Faire un autre signalement</a></p>
+{% endblock %}

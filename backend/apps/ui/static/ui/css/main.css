@@ -370,6 +370,55 @@ main {
   border: 0;
 }
 
+/* Carte de signalement */
+.report-map {
+  height: 320px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--line);
+}
+
+.btn-compact {
+  min-height: 36px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.9375rem;
+}
+
+/* Pastilles de statut : point coloré + libellé texte, jamais la couleur seule */
+.status-dot {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  margin-right: 0.375rem;
+  vertical-align: baseline;
+}
+
+.status-new { background: var(--status-new); }
+.status-in_progress { background: var(--status-progress); }
+.status-resolved { background: var(--status-resolved); }
+.status-rejected { background: var(--status-rejected); }
+
+/* Pot de miel : hors écran pour les humains, rempli par les robots */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+}
+
+fieldset {
+  border: none;
+  padding: 0;
+  margin: 0 0 1.25rem;
+}
+
+legend {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.125rem;
+  padding: 0;
+  margin-bottom: 0.5rem;
+}
+
 /* États vides */
 .empty {
   color: var(--ink-soft);

@@ -7,7 +7,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -16,24 +15,71 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Announcement',
+            name="Announcement",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200, verbose_name='titre')),
-                ('body', models.TextField(verbose_name='texte')),
-                ('level', models.CharField(choices=[('info', 'Information'), ('alert', 'Alerte')], default='info', max_length=10, verbose_name='niveau')),
-                ('image', models.ImageField(blank=True, upload_to='annonces/', verbose_name='image')),
-                ('image_is_decorative', models.BooleanField(default=False, verbose_name='image décorative')),
-                ('image_alt', models.CharField(blank=True, help_text="Obligatoire si l'image apporte une information (RGAA 1.1).", max_length=300, verbose_name='texte alternatif')),
-                ('is_pinned', models.BooleanField(default=False, verbose_name='épinglée')),
-                ('published_at', models.DateTimeField(default=django.utils.timezone.now, verbose_name='publiée le')),
-                ('expires_at', models.DateTimeField(blank=True, null=True, verbose_name='expire le')),
-                ('notified', models.BooleanField(default=False, verbose_name='notification envoyée')),
-                ('created_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL, verbose_name='créée par')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("title", models.CharField(max_length=200, verbose_name="titre")),
+                ("body", models.TextField(verbose_name="texte")),
+                (
+                    "level",
+                    models.CharField(
+                        choices=[("info", "Information"), ("alert", "Alerte")],
+                        default="info",
+                        max_length=10,
+                        verbose_name="niveau",
+                    ),
+                ),
+                (
+                    "image",
+                    models.ImageField(blank=True, upload_to="annonces/", verbose_name="image"),
+                ),
+                (
+                    "image_is_decorative",
+                    models.BooleanField(default=False, verbose_name="image décorative"),
+                ),
+                (
+                    "image_alt",
+                    models.CharField(
+                        blank=True,
+                        help_text="Obligatoire si l'image apporte une information (RGAA 1.1).",
+                        max_length=300,
+                        verbose_name="texte alternatif",
+                    ),
+                ),
+                ("is_pinned", models.BooleanField(default=False, verbose_name="épinglée")),
+                (
+                    "published_at",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, verbose_name="publiée le"
+                    ),
+                ),
+                (
+                    "expires_at",
+                    models.DateTimeField(blank=True, null=True, verbose_name="expire le"),
+                ),
+                (
+                    "notified",
+                    models.BooleanField(default=False, verbose_name="notification envoyée"),
+                ),
+                (
+                    "created_by",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="créée par",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'annonce',
-                'ordering': ['-is_pinned', '-published_at'],
+                "verbose_name": "annonce",
+                "ordering": ["-is_pinned", "-published_at"],
             },
         ),
     ]
