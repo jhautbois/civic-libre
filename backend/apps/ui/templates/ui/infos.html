@@ -1,0 +1,26 @@
+{% extends "ui/base.html" %}
+
+{% block title %}Infos pratiques – {{ civic.COMMUNE_NAME }}{% endblock %}
+
+{% block content %}
+<h1>Infos pratiques</h1>
+
+<section class="card">
+  <h2>La mairie</h2>
+  <p>Les coordonnées et horaires de la mairie seront renseignés ici par la commune.</p>
+</section>
+
+<section class="card">
+  <h2>S'abonner</h2>
+  <ul>
+    <li><a href="{% url 'events_ics' %}">Agenda au format calendrier (iCal)</a></li>
+    <li><a href="{% url 'events_rss' %}">Flux RSS des événements</a></li>
+    <li><a href="{% url 'announcements_rss' %}">Flux RSS des annonces</a></li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>Espace agents</h2>
+  <p><a href="{% url 'login' %}">Connexion à l'espace de gestion</a></p>
+</section>
+{% endblock %}

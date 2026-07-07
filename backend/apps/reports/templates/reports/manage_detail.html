@@ -1,0 +1,91 @@
+{% extends "gestion/base.html" %}
+
+{% block title %}{{ report.reference }} – {{ civic.COMMUNE_NAME }}{% endblock %}
+
+{% block manage_content %}
+<h1>{{ report.reference }} · {{ report.category.name }}</h1>
+
+<div class="card">
+  <p>
+    <span class="status-dot status-{{ report.status }}" aria-hidden="true"></span>
+    <strong>{{ report.get_status_display }}</strong>
+    · {{ report.get_publication_state_display|lower }}
+  </p>
+  <p class="meta">Déposé le {{ report.created_at|date:"j F Y à H:i" }} ·
+    service : {{ report.category.department.name }}
+    {% if report.reporter_email %} · déclarant joignable (courriel dans la fiche, jamais public){% endif %}</p>
+  {% if report.address %}<p>{{ report.address }}{% if report.location_hint %} ({{ report.location_hint }}){% endif %}</p>{% endif %}
+  {% if report.latitude %}
+  <p class="meta">Position : {{ report.latitude|floatformat:5 }}, {{ report.longitude|floatformat:5 }}
+    · <a href="https://www.openstreetmap.org/?mlat={{ report.latitude }}&mlon={{ report.longitude }}#map=18/{{ report.latitude }}/{{ report.longitude }}">voir sur OpenStreetMap</a></p>
+  {% endif %}
+  <h2>Description</h2>
+  <div>{{ report.description|linebreaks }}</div>
+
+  {% for photo in photos %}
+  <div class="moderation-item">
+    <img class="event-image" src="{% url 'reports:photo' photo.pk %}?taille=min" alt="{{ photo.alt_text }}">
+    <p class="meta">Photo : {{ photo.get_moderation_state_display|lower }}</p>
+    <form method="post" action="{% url 'reports:manage_moderate' report.reference %}" class="inline-actions">
+      {% csrf_token %}
+      <input type="hidden" name="photo" value="{{ photo.pk }}">
+      <button class="btn btn-secondary btn-compact" name="action" value="photo_approuver">Approuver la photo</button>
+      <button class="btn btn-secondary btn-compact" name="action" value="photo_rejeter">Rejeter la photo</button>
+    </form>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="card">
+  <h2>Modération de la publication</h2>
+  <p class="helptext">Avant publication, vérifiez : pas de visage ni de plaque lisible sur les
+  photos approuvées, pas de personne nommée ni de propriété privée désignée dans la
+  description (charte de modération, docs/exploitation).</p>
+  <form method="post" action="{% url 'reports:manage_moderate' report.reference %}" class="inline-actions">
+    {% csrf_token %}
+    <button class="btn btn-secondary" name="action" value="publier">Publier le contenu</button>
+    <button class="btn btn-secondary" name="action" value="masquer">Masquer le contenu</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Changer le statut</h2>
+  <form method="post" action="{% url 'reports:manage_transition' report.reference %}" class="form-stack">
+    {% csrf_token %}
+    <div>
+      <label for="nouveau-statut">Nouveau statut</label>
+      <select id="nouveau-statut" name="new_status" required>
+        {% for value, label in statuts %}
+        <option value="{{ value }}" {% if value == report.status %}disabled{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="commentaire-public">Commentaire public (visible par le déclarant et sur la page de suivi)</label>
+      <textarea id="commentaire-public" name="public_comment" rows="3" maxlength="1000"></textarea>
+    </div>
+    <div>
+      <label for="motif-rejet">Motif du rejet (obligatoire si rejet)</label>
+      <input type="text" id="motif-rejet" name="rejection_reason" maxlength="300">
+    </div>
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+  </form>
+</div>
+
+{% if updates %}
+<div class="card">
+  <h2>Historique</h2>
+  <ul class="card-list">
+    {% for update in updates %}
+    <li>
+      <p><strong>{{ update.get_new_status_display }}</strong> · {{ update.created_at|date:"j F Y à H:i" }}
+        {% if update.author %} · {{ update.author.username }}{% endif %}</p>
+      {% if update.public_comment %}<p>{{ update.public_comment }}</p>{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+<p><a href="{% url 'reports:manage_list' %}">← Retour à la file</a></p>
+{% endblock %}

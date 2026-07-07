@@ -23,7 +23,7 @@ from apps.events.models import MirroredEvent
 
 AXE_JS = (Path(__file__).parent / "axe.min.js").read_text()
 
-PAGES = ["/", "/agenda/"]
+PAGES = ["/", "/agenda/", "/signaler/", "/infos/"]
 
 playwright_sync = pytest.importorskip(
     "playwright.sync_api", reason="playwright absent : job a11y uniquement"

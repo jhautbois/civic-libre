@@ -1,0 +1,49 @@
+{% extends "gestion/base.html" %}
+
+{% block title %}Signalements – {{ civic.COMMUNE_NAME }}{% endblock %}
+
+{% block manage_content %}
+<h1>Signalements</h1>
+
+{% if pending_moderation %}
+<p class="banner-info">{{ pending_moderation }} signalement{{ pending_moderation|pluralize }} en attente de modération.</p>
+{% endif %}
+
+<form method="get" class="manage-filters">
+  <label for="filtre-statut">Statut</label>
+  <select id="filtre-statut" name="statut">
+    <option value="ouverts" {% if statut_actif == 'ouverts' %}selected{% endif %}>À traiter et en cours</option>
+    {% for value, label in statuts %}
+    <option value="{{ value }}" {% if statut_actif == value %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+    <option value="tous" {% if statut_actif == 'tous' %}selected{% endif %}>Tous</option>
+  </select>
+  <label for="filtre-service">Service</label>
+  <select id="filtre-service" name="service">
+    <option value="mes" {% if service_actif == 'mes' %}selected{% endif %}>Mes services</option>
+    <option value="tous" {% if service_actif == 'tous' %}selected{% endif %}>Tous les services</option>
+  </select>
+  <button type="submit" class="btn btn-secondary btn-compact">Filtrer</button>
+</form>
+
+{% if reports %}
+<ul class="card-list">
+  {% for report in reports %}
+  <li class="card">
+    <h2><a href="{% url 'reports:manage_detail' report.reference %}">{{ report.reference }} · {{ report.category.name }}</a></h2>
+    <p>
+      <span class="status-dot status-{{ report.status }}" aria-hidden="true"></span>{{ report.get_status_display }}
+      {% if report.publication_state == 'pending' %} · <strong>à modérer</strong>{% endif %}
+    </p>
+    <p class="meta">{{ report.created_at|date:"j F Y à H:i" }} · {{ report.category.department.name }}
+      {% if report.address %} · {{ report.address|truncatechars:60 }}{% endif %}</p>
+  </li>
+  {% endfor %}
+</ul>
+{% if page_obj.has_next %}
+<div class="pager"><a class="btn btn-secondary" href="?page={{ page_obj.next_page_number }}&statut={{ statut_actif }}&service={{ service_actif }}">Voir plus</a></div>
+{% endif %}
+{% else %}
+<p class="empty">Aucun signalement dans cette vue. Tout est à jour.</p>
+{% endif %}
+{% endblock %}

@@ -6,6 +6,8 @@
   <title>{% block title %}{{ civic.COMMUNE_NAME }}{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'ui/css/main.css' %}">
   <link rel="alternate" type="application/rss+xml" title="Agenda de {{ civic.COMMUNE_NAME }}" href="{% url 'events_rss' %}">
+  <link rel="alternate" type="application/rss+xml" title="Annonces de {{ civic.COMMUNE_NAME }}" href="{% url 'announcements_rss' %}">
+  {% block extra_head %}{% endblock %}
 </head>
 <body>
   <a class="skip-link" href="#contenu">Aller au contenu</a>
@@ -13,14 +15,23 @@
     <a class="commune" href="{% url 'ui:home' %}">{{ civic.COMMUNE_NAME }}</a>
   </header>
   <main id="contenu">
+    {% if messages %}
+      {% for message in messages %}
+      <p class="{% if message.tags == 'error' %}banner-alert{% else %}banner-info{% endif %}" role="{% if message.tags == 'error' %}alert{% else %}status{% endif %}">{{ message }}</p>
+      {% endfor %}
+    {% endif %}
     {% block content %}{% endblock %}
   </main>
   <footer class="site-footer">
-    <p>Application citoyenne libre de {{ civic.COMMUNE_NAME }}.</p>
+    <p>Application citoyenne libre de {{ civic.COMMUNE_NAME }}.
+       <a href="{% url 'ui:privacy' %}">Vos données</a> ·
+       <a href="{% url 'ui:accessibility' %}">Accessibilité</a></p>
   </footer>
   <nav class="nav-bottom" aria-label="Navigation principale">
     <a href="{% url 'ui:home' %}" {% if request.resolver_match.view_name == 'ui:home' %}aria-current="page"{% endif %}>Accueil</a>
     <a href="{% url 'events:list' %}" {% if request.resolver_match.namespace == 'events' %}aria-current="page"{% endif %}>Agenda</a>
+    <a href="{% url 'reports:create' %}" {% if request.resolver_match.namespace == 'reports' %}aria-current="page"{% endif %}>Signaler</a>
+    <a href="{% url 'ui:infos' %}" {% if request.resolver_match.view_name == 'ui:infos' %}aria-current="page"{% endif %}>Infos</a>
   </nav>
 </body>
 </html>

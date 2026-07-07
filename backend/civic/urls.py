@@ -7,6 +7,7 @@ from django.views.static import serve
 from apps.announcements.feeds import AnnouncementsFeed
 from apps.events.feeds import EventsFeed
 from apps.events.ics import events_ics
+from apps.ui import tiles
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -21,6 +22,9 @@ urlpatterns = [
     ),
     path("gestion/deconnexion/", auth_views.LogoutView.as_view(), name="logout"),
     path("", include("apps.announcements.urls")),
+    path("", include("apps.reports.urls")),
+    path("open311/v2/", include("apps.reports.open311_urls")),
+    path("tuiles/<int:z>/<int:x>/<int:y>.png", tiles.tile, name="tile"),
     # Images publiques des annonces (les photos de signalements passeront
     # par une vue contrôlée, jamais par ce chemin).
     path(
