@@ -32,6 +32,9 @@
     {% if is_owner and report.publication_state == 'pending' %}
     <p class="meta">Votre signalement sera visible publiquement après vérification par la mairie.</p>
     {% endif %}
+    {% if report.publication_state == 'published' %}
+    <p class="meta"><a href="mailto:{{ civic.CONTACT_EMAIL }}?subject=Demande de retrait – signalement {{ report.reference }}">Demander le retrait de ce contenu</a></p>
+    {% endif %}
   {% else %}
     <p class="meta">Le détail sera visible après vérification par la mairie.</p>
   {% endif %}

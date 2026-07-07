@@ -12,6 +12,7 @@
   <meta name="theme-color" content="{{ civic.ACCENT_COLOR }}">
   <link rel="icon" href="{% url 'pwa_icon' 192 %}">
   <link rel="apple-touch-icon" href="{% url 'pwa_icon' 192 %}">
+  <script src="{% static 'ui/js/app.js' %}" defer></script>
   {% block extra_head %}{% endblock %}
 </head>
 <body>

@@ -162,7 +162,9 @@ def _request_dict(request, report):
     return {
         "service_request_id": report.reference,
         "status": STATUS_TO_OPEN311[report.status],
-        "status_notes": (last_update.public_comment if last_update else "")[:500],
+        "status_notes": (last_update.public_comment if last_update else "")[:500]
+        if published
+        else "",
         "service_name": report.category.name,
         "service_code": report.category.code,
         "description": report.description if published else "",
@@ -174,8 +176,10 @@ def _request_dict(request, report):
         "address": report.address if published else "",
         "address_id": "",
         "zipcode": "",
-        "lat": report.latitude if report.latitude is not None else "",
-        "long": report.longitude if report.longitude is not None else "",
+        # Position exposée seulement après modération : la charte impose
+        # de pouvoir généraliser la localisation avant publication.
+        "lat": report.latitude if published and report.latitude is not None else "",
+        "long": report.longitude if published and report.longitude is not None else "",
         "media_url": media_url,
     }
 
@@ -187,7 +191,8 @@ def requests_collection(request, fmt):
     if request.method != "GET":
         return HttpResponseNotAllowed(["GET", "POST"])
 
-    qs = Report.objects.select_related("category", "category__department")
+    # Liste publique : contenus à l'état publié uniquement (docs/spec.md).
+    qs = Report.objects.published().select_related("category", "category__department")
     ids = request.GET.get("service_request_id")
     if ids:
         qs = qs.filter(reference__in=[i.strip() for i in ids.split(",")])
@@ -295,7 +300,13 @@ def token_detail(request, token_id, fmt):
 
 def request_updates(request, fmt):
     """Extension FixMyStreet : GET servicerequestupdates."""
-    qs = ReportUpdate.objects.select_related("report").order_by("created_at")
+    qs = (
+        ReportUpdate.objects.filter(
+            report__publication_state=Report.Publication.PUBLISHED
+        )
+        .select_related("report")
+        .order_by("created_at")
+    )
     start = _parse_date(request.GET.get("start_date"))
     end = _parse_date(request.GET.get("end_date"))
     if start:
@@ -313,7 +324,9 @@ def request_updates(request, fmt):
             "status": STATUS_TO_EXTENDED[update.new_status],
             "updated_datetime": _iso(update.created_at),
             "description": update.public_comment,
-            "media_url": update.media_url,
+            # media_url stockée au POST = URL fournie par le déclarant :
+            # jamais republiée sans modération (docs/spec.md).
+            "media_url": "",
         }
         for update in qs[:1000]
     ]
