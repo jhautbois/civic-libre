@@ -1,0 +1,5 @@
+{% load l10n %}
+<time class="date-tile" datetime="{{ event.starts_at|date:'c' }}">
+  <span class="day">{{ event.starts_at|date:"j" }}</span>
+  <span class="month">{{ event.starts_at|date:"N" }}</span>
+</time>

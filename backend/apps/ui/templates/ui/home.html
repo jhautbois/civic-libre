@@ -1,6 +1,29 @@
 {% extends "ui/base.html" %}
 
 {% block content %}
-<h1>Bienvenue à {{ civic.COMMUNE_NAME }}</h1>
-<p>L'application citoyenne de la commune est en cours de construction.</p>
+<h1>{{ civic.COMMUNE_NAME }}</h1>
+
+<section aria-labelledby="titre-agenda">
+  <h2 id="titre-agenda">Prochains événements</h2>
+  {% if upcoming_events %}
+    <ul class="card-list">
+      {% for event in upcoming_events %}
+      <li class="card">
+        <div class="event-row">
+          {% include "events/_date_tile.html" %}
+          <div>
+            <h3><a href="{{ event.get_absolute_url }}">{{ event.title }}</a></h3>
+            <p class="meta">
+              {{ event.starts_at|date:"l j F, H\hi"|capfirst }}{% if event.place_name %} · {{ event.place_name }}{% endif %}
+            </p>
+          </div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+    <p><a href="{% url 'events:list' %}">Voir tout l'agenda</a></p>
+  {% else %}
+    <p class="empty">Aucun événement à venir. Le prochain apparaîtra ici.</p>
+  {% endif %}
+</section>
 {% endblock %}

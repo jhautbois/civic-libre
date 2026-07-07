@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir .
 
 COPY . .
 
-RUN useradd --system --uid 1000 civic \
+RUN useradd --system --create-home --uid 1000 civic \
     && mkdir -p /data \
     && chown civic:civic /data
 

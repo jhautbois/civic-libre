@@ -12,6 +12,7 @@ dependencies = [
     "pywebpush>=2.0",
     "requests>=2.32",
     "argon2-cffi>=23",
+    "icalendar>=6",
 ]
 
 [build-system]
@@ -27,13 +28,18 @@ dev = [
     "pytest-django>=4.9",
     "ruff>=0.9",
     "pyyaml>=6",
+    "playwright>=1.49",
+    "pytest-playwright>=0.6",
 ]
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "civic.settings"
 pythonpath = ["."]
 testpaths = ["tests", "apps"]
-addopts = "-q"
+addopts = "-q -m 'not a11y'"
+markers = [
+    "a11y: contrôles axe-core avec navigateur (job CI dédié, lancer avec -m a11y)",
+]
 
 [tool.ruff]
 line-length = 100
@@ -41,3 +47,6 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "DJ"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/migrations/*" = ["E501"]

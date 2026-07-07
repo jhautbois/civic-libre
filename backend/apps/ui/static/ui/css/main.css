@@ -1,0 +1,278 @@
+/* Civic Libre : tokens et base du système de design (docs/design.md).
+   Tokens minimaux du lot 1, consolidés au lot 7. */
+
+:root {
+  /* Couleurs de base (thème clair) */
+  --paper: #F7F6F2;
+  --card: #FFFFFF;
+  --ink: #1D2129;
+  --ink-soft: #4B5563;
+  --line: #E4E2DB;
+
+  /* Accent communal : variantes dérivées, jamais la teinte brute.
+     Valeurs par défaut calculées pour #31597F, régénérées par la
+     dérivation automatique (lot 7). */
+  --accent: #31597F;
+  --accent-ink: #2A4D6E;
+  --accent-surface: #E9EEF3;
+
+  /* Couleurs fonctionnelles (verrouillées par tests de contraste) */
+  --status-new: #8A4B08;
+  --status-progress: #1D4ED8;
+  --status-resolved: #166534;
+  --status-rejected: #57534E;
+  --alert: #B42318;
+
+  /* Typographie : fontes locales au lot 7, pile système en attendant */
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-text: "Source Sans 3", system-ui, sans-serif;
+
+  --radius-card: 12px;
+  --shadow-card: 0 1px 3px rgb(0 0 0 / 8%);
+  --content-width: 40rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-text);
+  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  line-height: 1.2;
+  margin: 0 0 0.5em;
+}
+
+h1 { font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.25rem); }
+h2 { font-size: clamp(1.375rem, 1.2rem + 0.8vw, 1.625rem); }
+
+a {
+  color: var(--accent-ink);
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent-ink);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Lien d'évitement */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  background: var(--card);
+  padding: 0.75rem 1rem;
+  z-index: 10;
+}
+
+.skip-link:focus {
+  left: 0.5rem;
+  top: 0.5rem;
+}
+
+/* Structure */
+.site-header {
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+  padding: 0.75rem 1rem;
+}
+
+.site-header .commune {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+main {
+  flex: 1;
+  width: 100%;
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 1rem 1rem 5.5rem;
+}
+
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding: 1rem;
+  padding-bottom: 5rem;
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+}
+
+/* Navigation basse : libellés toujours visibles, cibles 44 px min */
+.nav-bottom {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  background: var(--card);
+  border-top: 1px solid var(--line);
+  display: flex;
+  z-index: 5;
+}
+
+.nav-bottom a {
+  flex: 1;
+  min-height: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.125rem;
+  padding: 0.5rem 0.25rem;
+  text-decoration: none;
+  color: var(--ink-soft);
+  font-size: 0.8125rem;
+}
+
+.nav-bottom a[aria-current="page"] {
+  color: var(--accent-ink);
+  font-weight: 600;
+  box-shadow: inset 0 3px 0 var(--accent-ink);
+}
+
+/* Cartes */
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.card h2, .card h3 {
+  margin-top: 0;
+}
+
+.card a {
+  color: inherit;
+}
+
+/* Tuile date : la signature typographique (docs/design.md) */
+.date-tile {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 4rem;
+  padding: 0.5rem 0.625rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--card);
+  font-family: var(--font-display);
+  line-height: 1.05;
+}
+
+.date-tile .day {
+  font-size: clamp(2rem, 1.8rem + 1vw, 2.5rem);
+  font-weight: 700;
+}
+
+.date-tile .month {
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+}
+
+.event-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.event-row .meta {
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+  margin: 0.25rem 0 0;
+}
+
+/* Boutons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius-card);
+  border: 1px solid transparent;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: var(--card);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+/* Liens de flux */
+.feed-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+/* Listes de cartes (la CSP interdit les styles inline) */
+.card-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.event-image {
+  max-width: 100%;
+  border-radius: var(--radius-card);
+}
+
+/* États vides */
+.empty {
+  color: var(--ink-soft);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-card);
+  padding: 1.5rem;
+  text-align: center;
+}
+
+/* Pagination explicite */
+.pager {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

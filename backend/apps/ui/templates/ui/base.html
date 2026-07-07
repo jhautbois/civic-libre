@@ -1,19 +1,26 @@
-<!doctype html>
+{% load static %}<!doctype html>
 <html lang="fr">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}{{ civic.COMMUNE_NAME }}{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'ui/css/main.css' %}">
+  <link rel="alternate" type="application/rss+xml" title="Agenda de {{ civic.COMMUNE_NAME }}" href="{% url 'events_rss' %}">
 </head>
 <body>
-  <header>
-    <p>{{ civic.COMMUNE_NAME }}</p>
+  <a class="skip-link" href="#contenu">Aller au contenu</a>
+  <header class="site-header">
+    <a class="commune" href="{% url 'ui:home' %}">{{ civic.COMMUNE_NAME }}</a>
   </header>
   <main id="contenu">
     {% block content %}{% endblock %}
   </main>
-  <footer>
-    <p><a href="{{ civic.AGENDA_URL }}">Agenda</a></p>
+  <footer class="site-footer">
+    <p>Application citoyenne libre de {{ civic.COMMUNE_NAME }}.</p>
   </footer>
+  <nav class="nav-bottom" aria-label="Navigation principale">
+    <a href="{% url 'ui:home' %}" {% if request.resolver_match.view_name == 'ui:home' %}aria-current="page"{% endif %}>Accueil</a>
+    <a href="{% url 'events:list' %}" {% if request.resolver_match.namespace == 'events' %}aria-current="page"{% endif %}>Agenda</a>
+  </nav>
 </body>
 </html>

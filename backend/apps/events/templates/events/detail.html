@@ -1,0 +1,32 @@
+{% extends "ui/base.html" %}
+
+{% block title %}{{ event.title }} – {{ civic.COMMUNE_NAME }}{% endblock %}
+
+{% block content %}
+<article class="card">
+  <div class="event-row">
+    {% include "events/_date_tile.html" %}
+    <div>
+      <h1>{{ event.title }}</h1>
+      <p class="meta">
+        {{ event.starts_at|date:"l j F Y, H\hi"|capfirst }}{% if event.ends_at %} → {{ event.ends_at|date:"H\hi" }}{% endif %}
+      </p>
+      {% if event.place_name or event.place_address %}
+      <p class="meta">{{ event.place_name }}{% if event.place_address %}, {{ event.place_address }}{% endif %}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if event.image_url %}
+  <p><img class="event-image" src="{{ event.image_url }}" alt="{{ event.image_alt }}"></p>
+  {% endif %}
+
+  {% if event.description %}
+  <div>{{ event.description|striptags|linebreaks }}</div>
+  {% endif %}
+
+  <p><a class="btn btn-secondary" href="{% url 'events_ics' %}">Ajouter l'agenda à mon calendrier</a></p>
+</article>
+
+<p><a href="{% url 'events:list' %}">← Tous les événements</a></p>
+{% endblock %}
