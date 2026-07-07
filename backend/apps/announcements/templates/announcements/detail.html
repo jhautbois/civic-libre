@@ -1,0 +1,20 @@
+{% extends "ui/base.html" %}
+
+{% block title %}{{ announcement.title }} – {{ civic.COMMUNE_NAME }}{% endblock %}
+
+{% block content %}
+<article class="card {% if announcement.level == 'alert' %}card-alert{% endif %}">
+  {% if announcement.level == 'alert' %}
+  <p class="badge-alert">Alerte</p>
+  {% endif %}
+  <h1>{{ announcement.title }}</h1>
+  <p class="meta">Publié le {{ announcement.published_at|date:"j F Y" }} par la mairie</p>
+  {% if announcement.image %}
+  <p><img class="event-image" src="{{ announcement.image.url }}"
+          alt="{% if not announcement.image_is_decorative %}{{ announcement.image_alt }}{% endif %}"></p>
+  {% endif %}
+  <div>{{ announcement.body|linebreaks }}</div>
+</article>
+
+<p><a href="{% url 'ui:home' %}">← Retour à l'accueil</a></p>
+{% endblock %}

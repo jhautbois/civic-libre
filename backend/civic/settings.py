@@ -64,7 +64,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "apps.ui",
     "apps.events",
+    "apps.announcements",
 ]
+
+LOGIN_URL = "/gestion/connexion/"
+LOGIN_REDIRECT_URL = "/gestion/annonces/"
+LOGOUT_REDIRECT_URL = "/"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

@@ -1,0 +1,18 @@
+{% extends "announcements/manage_base.html" %}
+
+{% block title %}{% if form.instance.pk %}Modifier l'annonce{% else %}Écrire une annonce{% endif %} – {{ civic.COMMUNE_NAME }}{% endblock %}
+
+{% block manage_content %}
+<h1>{% if form.instance.pk %}Modifier l'annonce{% else %}Écrire une annonce{% endif %}</h1>
+
+<form method="post" enctype="multipart/form-data" class="card form-stack" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}
+  <div class="banner-alert" role="alert">{{ form.non_field_errors }}</div>
+  {% endif %}
+  {{ form.as_div }}
+  <button type="submit" class="btn btn-primary">
+    {% if form.instance.pk %}Enregistrer{% else %}Publier{% endif %}
+  </button>
+</form>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "announcements/manage_base.html" %}
+
+{% block title %}Gestion des annonces – {{ civic.COMMUNE_NAME }}{% endblock %}
+
+{% block manage_content %}
+<h1>Annonces</h1>
+<p><a class="btn btn-primary" href="{% url 'announcements:manage_create' %}">Écrire une annonce</a></p>
+
+{% if announcements %}
+<ul class="card-list">
+  {% for a in announcements %}
+  <li class="card">
+    <h2><a href="{% url 'announcements:manage_update' a.pk %}">{{ a.title }}</a></h2>
+    <p class="meta">
+      {{ a.get_level_display }} · publiée le {{ a.published_at|date:"j F Y à H:i" }}
+      {% if a.is_pinned %} · épinglée{% endif %}
+      {% if a.expires_at %} · expire le {{ a.expires_at|date:"j F Y" }}{% endif %}
+    </p>
+    <p><a href="{% url 'announcements:manage_delete' a.pk %}">Supprimer</a></p>
+  </li>
+  {% endfor %}
+</ul>
+{% if page_obj.has_next %}
+<div class="pager"><a class="btn btn-secondary" href="?page={{ page_obj.next_page_number }}">Voir plus</a></div>
+{% endif %}
+{% else %}
+<p class="empty">Aucune annonce pour l'instant. La première apparaîtra ici.</p>
+{% endif %}
+{% endblock %}

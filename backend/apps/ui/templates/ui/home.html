@@ -3,6 +3,34 @@
 {% block content %}
 <h1>{{ civic.COMMUNE_NAME }}</h1>
 
+{% if alerts %}
+<section aria-labelledby="titre-alertes">
+  <h2 id="titre-alertes" class="sr-only">Alertes en cours</h2>
+  {% for a in alerts %}
+  <article class="card card-alert">
+    <p class="badge-alert">Alerte</p>
+    <h3><a href="{{ a.get_absolute_url }}">{{ a.title }}</a></h3>
+    <p>{{ a.body|truncatewords:30 }}</p>
+  </article>
+  {% endfor %}
+</section>
+{% endif %}
+
+{% if news %}
+<section aria-labelledby="titre-actus">
+  <h2 id="titre-actus">Actualités</h2>
+  <ul class="card-list">
+    {% for a in news %}
+    <li class="card">
+      <h3><a href="{{ a.get_absolute_url }}">{{ a.title }}</a></h3>
+      <p class="meta">{{ a.published_at|date:"j F Y" }}{% if a.is_pinned %} · épinglée{% endif %}</p>
+      <p>{{ a.body|truncatewords:25 }}</p>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
 <section aria-labelledby="titre-agenda">
   <h2 id="titre-agenda">Prochains événements</h2>
   {% if upcoming_events %}
