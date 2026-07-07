@@ -180,7 +180,6 @@ class TestUpdatesFixMyStreet:
         data = client.get("/open311/v2/servicerequestupdates.json").json()
         assert data[-1]["status"] == "FIXED"
 
-
     def test_updates_exclut_les_non_publies_et_les_media(self, client, report):
         agent = User.objects.create_user("agent-w")
         services.transition_report(report=report, new_status="in_progress", author=agent)

@@ -301,9 +301,7 @@ def token_detail(request, token_id, fmt):
 def request_updates(request, fmt):
     """Extension FixMyStreet : GET servicerequestupdates."""
     qs = (
-        ReportUpdate.objects.filter(
-            report__publication_state=Report.Publication.PUBLISHED
-        )
+        ReportUpdate.objects.filter(report__publication_state=Report.Publication.PUBLISHED)
         .select_related("report")
         .order_by("created_at")
     )

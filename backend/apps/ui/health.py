@@ -44,9 +44,7 @@ def _outbox_pending() -> int | None:
     from apps.push.models import OutgoingNotification
 
     try:
-        return OutgoingNotification.objects.filter(
-            state=OutgoingNotification.State.PENDING
-        ).count()
+        return OutgoingNotification.objects.filter(state=OutgoingNotification.State.PENDING).count()
     except Exception:  # noqa: BLE001
         return None
 
